@@ -1,0 +1,1 @@
+export const AUTH_TOKEN_HEADER = 'X-AUTH-TOKEN' as const;

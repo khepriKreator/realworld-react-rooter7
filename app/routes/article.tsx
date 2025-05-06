@@ -1,52 +1,47 @@
+import { ConduitAPI } from "~/shared/api/services/api";
 import type { Route } from "../+types/root";
-import END_POINT from '../api/endpoint';
+import { useLoaderData, useNavigate } from "react-router";
+import type { SingleArticleResponse } from "~/shared/api/models/models";
+
 export async function loader({params}: Route.LoaderArgs) {
-    const res = await fetch(`${END_POINT}/articles/${params.articleId}`);
-    if (!res) { 
-        throw new Response('Not Found', { status: 404});
-    }
-    return res.json();
+  const api = new ConduitAPI();
+  const res = await api.getArticle(`${params.articleId}`);
+  return res;
 }
 
-export default function Article({loaderData: data}: Route.ComponentProps) {   
-    const {
-        slug,
-        title,
-        description,
-        body,
-        tagList,
-        createdAt,
-        updatedAt,
-        favorited,
-        favoritesCount,
-        author,
-    } = data.article; 
+export default function Article() {
+  const {article} = useLoaderData<SingleArticleResponse>();
+  const navigate = useNavigate();
     return (
         <div className="article-page">
             <div className="banner">
                 <div className="container">
-                <h1>{title}</h1>
+                <h1>{article.title || 'How to build webapps that scale'}</h1>
 
                 <div className="article-meta">
                     <a href="/profile/eric-simons"><img src="http://i.imgur.com/Qr71crq.jpg" /></a>
                     <div className="info">
-                    <a href="/profile/eric-simons" className="author">{author.username}</a>
-                    <span className="date">{createdAt}</span>
+                        <a href="/profile/eric-simons" className="author">{article.author.username || 'Eric Simons'}</a>
+                        <span className="date">{article.createdAt || 'January 20th'}</span>
                     </div>
                     <button className="btn btn-sm btn-outline-secondary">
-                    <i className="ion-plus-round"></i>
-                    &nbsp; Follow {author.username} <span className="counter">({favoritesCount})</span>
+                        <i className="ion-plus-round"/>
+                        &nbsp; Follow {article.author.username || 'Eric Simons'} 
+                        <span className="counter">({article.author.following || 0})</span>
                     </button>
                     &nbsp;&nbsp;
                     <button className="btn btn-sm btn-outline-primary">
-                    <i className="ion-heart"></i>
-                    &nbsp; Favorite Post <span className="counter">(29)</span>
+                        <i className="ion-heart"/>
+                        &nbsp; Favorite Post <span className="counter">({article.favoritesCount || 0})</span>
                     </button>
-                    <button className="btn btn-sm btn-outline-secondary">
-                    <i className="ion-edit"></i> Edit Article
+                    <button 
+                        onClick={() => navigate(`/articles/${article.slug}/editor`)} 
+                        className="btn btn-sm btn-outline-secondary"
+                    >
+                        <i className="ion-edit"/> Edit Article
                     </button>
                     <button className="btn btn-sm btn-outline-danger">
-                    <i className="ion-trash-a"></i> Delete Article
+                        <i className="ion-trash-a"/> Delete Article
                     </button>
                 </div>
                 </div>
@@ -56,13 +51,14 @@ export default function Article({loaderData: data}: Route.ComponentProps) {
                 <div className="row article-content">
                 <div className="col-md-12">
                     <p>
-                    Web development technologies have evolved at an incredible clip over the past few years.
+                    {article.description || 'Web development technologies...'}
                     </p>
                     <h2 id="introducing-ionic">Introducing RealWorld.</h2>
                     <p>It's a great solution for learning how other frameworks work.</p>
                     <ul className="tag-list">
-                    <li className="tag-default tag-pill tag-outline">realworld</li>
-                    <li className="tag-default tag-pill tag-outline">implementations</li>
+                        {article.tagList &&article.tagList.map((tag) => {
+                            return <li className="tag-default tag-pill tag-outline">{tag}</li>;
+                        })}
                     </ul>
                 </div>
                 </div>
@@ -73,24 +69,24 @@ export default function Article({loaderData: data}: Route.ComponentProps) {
                 <div className="article-meta">
                     <a href="profile.html"><img src="http://i.imgur.com/Qr71crq.jpg" /></a>
                     <div className="info">
-                    <a href="" className="author">Eric Simons</a>
-                    <span className="date">January 20th</span>
+                        <a href="" className="author">{article.author.username || 'Eric Simons'}</a>
+                        <span className="date">{article.createdAt || 'January 20th'}</span>
                     </div>
 
                     <button className="btn btn-sm btn-outline-secondary">
-                    <i className="ion-plus-round"></i>
-                    &nbsp; Follow Eric Simons
+                        <i className="ion-plus-round"/>
+                        &nbsp; Follow {article.author.username || 'Eric Simons'}
                     </button>
                     &nbsp;
                     <button className="btn btn-sm btn-outline-primary">
-                    <i className="ion-heart"></i>
-                    &nbsp; Favorite Article <span className="counter">(29)</span>
+                        <i className="ion-heart"/>
+                        &nbsp; Favorite Article <span className="counter">({article.favoritesCount || 0})</span>
                     </button>
                     <button className="btn btn-sm btn-outline-secondary">
-                    <i className="ion-edit"></i> Edit Article
+                        <i className="ion-edit"/> Edit Article
                     </button>
                     <button className="btn btn-sm btn-outline-danger">
-                    <i className="ion-trash-a"></i> Delete Article
+                        <i className="ion-trash-a"/> Delete Article
                     </button>
                 </div>
                 </div>
@@ -137,7 +133,7 @@ export default function Article({loaderData: data}: Route.ComponentProps) {
                         <a href="/profile/jacob-schmidt" className="comment-author">Jacob Schmidt</a>
                         <span className="date-posted">Dec 29th</span>
                         <span className="mod-options">
-                        <i className="ion-trash-a"></i>
+                        <i className="ion-trash-a"/>
                         </span>
                     </div>
                     </div>
