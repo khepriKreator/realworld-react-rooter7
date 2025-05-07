@@ -1,6 +1,6 @@
 import { Form, Link, redirect } from "react-router";
 import { ConduitAPI } from "~/shared/api/services/api";
-import type { Route } from "../+types/root";
+import type { Route } from "../../+types/root";
 import type { NewUserRequest } from "~/shared/api/models/models";
 import { AuthTokenHelper } from '~/shared/api/helpers/authTokenHelper';
 

@@ -3,20 +3,23 @@ import { type RouteConfig, index, layout, route, prefix } from "@react-router/de
 export default [
     layout('layouts/layout.tsx', 
         [
-            layout("routes/home.tsx", [
-                index('routes/globalArticles.tsx'),
+            layout("layouts/home.tsx", [
+                index('routes/components/globalArticles.tsx'),
                 ...prefix(':username', [
-                    route('feeds', 'routes/feedsArticles.tsx'),
+                    route('feeds', 'routes/components/feedsArticles.tsx'),
                 ])
             ]),
-            route('articles/:articleId', 'routes/article.tsx'),
-            route('users/login', 'routes/login.tsx'),
-            route('users/register', 'routes/register.tsx'),
-            route('settings', 'routes/settings.tsx'),
+            route('articles/:articleId', 'routes/components/article.tsx'),
+                route('articles/:articleId/comments/addComment', 'routes/actions/addComment.tsx'),
+                    route('/articles/:articleId/edit', 'routes/components/editArticle.tsx'),
+            route('users/login', 'routes/components/login.tsx'),
+            route('users/register', 'routes/components/register.tsx'),
+            route('settings', 'routes/components/settings.tsx'),
             ...prefix(':username', [
-                route('articles/:articleId/editor', 'routes/createEditArticle.tsx'),
-                route('logout', 'routes/logout.tsx'),
-            ])
+                route('/articles/new', 'routes/components/createArticle.tsx'),
+                route('logout', 'routes/actions/logout.tsx'),
+            ]),
+
         ]
     ),
 ] satisfies RouteConfig;

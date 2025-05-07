@@ -56,7 +56,7 @@ const Header = () => {
                     <NavLink className="nav-link active" to="/">Home</NavLink>
                 </li>
                 <li className="nav-item">
-                    <NavLink className="nav-link" to="/editor"> <i className="ion-compose"></i>&nbsp;New Article </NavLink>
+                    <NavLink className="nav-link" to={`/${user.username}/articles/new`}> <i className="ion-compose"></i>&nbsp;New Article </NavLink>
                 </li>
                 <li className="nav-item">
                     <NavLink className="nav-link" to="/settings"> <i className="ion-gear-a"></i>&nbsp;Settings </NavLink>

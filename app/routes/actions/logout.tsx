@@ -1,5 +1,5 @@
 import {redirect} from 'react-router';
-import type { Route } from "../+types/root";
+import type { Route } from "../../+types/root";
 import { AuthTokenHelper } from '~/shared/api/helpers/authTokenHelper';
 
 export const action = async ({ request }: Route.ActionArgs) => {
